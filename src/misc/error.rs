@@ -14,21 +14,9 @@ pub struct AoCError {
 }
 
 impl AoCError {
-    /// Returns the error kind
-    pub fn kind(&self) -> &ErrorKind {
-        &self.kind
-    }
-
     pub fn new(msg: String) -> AoCError {
         Self {
             kind: ErrorKind::Msg(msg),
-            source: None,
-        }
-    }
-    /// Creates generic error with a message
-    pub fn msg(value: &impl ToString) -> Self {
-        Self {
-            kind: ErrorKind::Msg(value.to_string()),
             source: None,
         }
     }

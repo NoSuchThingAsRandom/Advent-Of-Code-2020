@@ -1,22 +1,22 @@
 use crate::misc::error::{AoCError, AoCResult};
-use crate::misc::{error, read_vec};
+use crate::misc::read_vec_ints;
 use rand::seq::SliceRandom;
 use std::cmp::Ordering;
 use std::time::Instant;
 
 pub fn run() {
-    //let mut rng = rand::thread_rng();
-    let mut original = read_vec(String::from("../Inputs/input1.txt")).unwrap();
+    let mut rng = rand::thread_rng();
+    let original = read_vec_ints(String::from("../Inputs/input1.txt")).unwrap();
 
     const COUNT: u128 = 10000;
     let mut sum = 0;
     for _ in 0..COUNT {
         let mut data = original.clone();
-        //data.shuffle(&mut rng);
-        data.sort();
+        data.shuffle(&mut rng);
         let start = Instant::now();
-        let a = part_1(&data);
-        let b = part_2_a(&data);
+        data.sort();
+        let _a = part_1(&data);
+        let _b = part_2_a(&data);
         let end = Instant::now();
         sum += end.duration_since(start).as_micros()
     }
@@ -56,7 +56,8 @@ fn part_1(data: &[usize]) -> AoCResult<usize> {
 }
 pub fn bench(data: &mut Vec<usize>) {
     data.sort();
-    part_2_a(data);
+    part_2_a(data).unwrap();
+    part_2_b(data).unwrap();
 }
 // Result is 802011
 fn part_2_a(data: &[usize]) -> AoCResult<usize> {
