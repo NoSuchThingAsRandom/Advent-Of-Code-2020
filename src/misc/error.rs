@@ -4,22 +4,22 @@ use std::error::Error as StdError;
 use std::fmt;
 
 // Convenience Result type
-pub type AoCResult<T> = std::result::Result<T, Error>;
+pub type AoCResult<T> = std::result::Result<T, AoCError>;
 
 /// An error type for the Advent of Code crate
 #[derive(Debug)]
-pub struct Error {
+pub struct AoCError {
     kind: ErrorKind,
     source: Option<Box<dyn StdError + Send + Sync + 'static>>,
 }
 
-impl Error {
+impl AoCError {
     /// Returns the error kind
     pub fn kind(&self) -> &ErrorKind {
         &self.kind
     }
 
-    pub fn new(msg: String) -> Error {
+    pub fn new(msg: String) -> AoCError {
         Self {
             kind: ErrorKind::Msg(msg),
             source: None,
@@ -46,7 +46,7 @@ impl Error {
     }
 }
 
-impl StdError for Error {
+impl StdError for AoCError {
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         self.source
             .as_ref()
@@ -69,7 +69,7 @@ pub enum ErrorKind {
     UnsupportedDay { year: u16, day: u8 },
 }
 
-impl From<ErrorKind> for Error {
+impl From<ErrorKind> for AoCError {
     fn from(error: ErrorKind) -> Self {
         Self {
             kind: error,
@@ -78,7 +78,7 @@ impl From<ErrorKind> for Error {
     }
 }
 
-impl From<std::num::ParseIntError> for Error {
+impl From<std::num::ParseIntError> for AoCError {
     fn from(error: std::num::ParseIntError) -> Self {
         Self {
             kind: ErrorKind::InputParse,
@@ -86,7 +86,7 @@ impl From<std::num::ParseIntError> for Error {
         }
     }
 }
-impl From<std::io::Error> for Error {
+impl From<std::io::Error> for AoCError {
     fn from(error: std::io::Error) -> Self {
         Self {
             kind: ErrorKind::InputParse,
@@ -95,7 +95,7 @@ impl From<std::io::Error> for Error {
     }
 }
 
-impl fmt::Display for Error {
+impl fmt::Display for AoCError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self.kind {
             ErrorKind::Msg(message) => write!(f, "{}", message),
