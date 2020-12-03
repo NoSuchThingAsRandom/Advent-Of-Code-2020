@@ -1,4 +1,4 @@
-use crate::misc::error::AoCResult;
+use crate::misc::error::{AoCError, AoCResult};
 use crate::misc::{get_values, read_vec_string};
 
 pub fn run() -> AoCResult<usize> {
@@ -40,8 +40,10 @@ fn slope_checker(data: &[String], x_increment: usize, y_increment: usize) -> AoC
         if x_index >= data[y_index].len() {
             x_index -= data[y_index].len();
         }
-        if get_values(&data[y_index].chars().collect::<Vec<char>>(), x_index)?.eq(&'#') {
-            trees += 1;
+        if let Some(val) = data[y_index].chars().nth(x_index) {
+            if val.eq(&'#') {
+                trees += 1;
+            }
         }
         x_index += x_increment;
     }
