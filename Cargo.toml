@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 rand = "0.7.3"
-
+regex = "1.4.2"
 [dev-dependencies]
 criterion = "0.3"
 

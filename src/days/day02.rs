@@ -17,7 +17,7 @@ fn build_args(line: &str) -> AoCResult<Vec<String>> {
     let mut arg_builder = String::new();
     for char in line.chars() {
         if arg_index != ARG_SEPARATORS.len()
-            && char.eq(get_values(&ARG_SEPARATORS.to_vec(), arg_index)?)
+            && char.eq(*get_values(&ARG_SEPARATORS.to_vec(), arg_index)?)
         {
             arg_index += 1;
             args.push(arg_builder);

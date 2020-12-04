@@ -82,6 +82,14 @@ impl From<std::io::Error> for AoCError {
         }
     }
 }
+impl From<regex::Error> for AoCError {
+    fn from(error: regex::Error) -> Self {
+        Self {
+            kind: ErrorKind::InputParse,
+            source: Some(error.into()),
+        }
+    }
+}
 
 impl fmt::Display for AoCError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
