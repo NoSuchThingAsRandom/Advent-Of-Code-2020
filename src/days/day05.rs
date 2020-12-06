@@ -8,7 +8,7 @@ pub fn run() -> AoCResult<usize> {
     Ok(0)
 }
 
-fn get_seat_id(ticket: &String) -> usize {
+fn get_seat_id(ticket: &str) -> usize {
     let mut lowest_row = 0;
     let mut highest_row = 127;
     let mut lowest_col = 0;

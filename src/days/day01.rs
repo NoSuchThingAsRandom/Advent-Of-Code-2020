@@ -6,7 +6,7 @@ use std::time::Instant;
 
 pub fn run() {
     let mut rng = rand::thread_rng();
-    let original = read_vec_ints(String::from("../Inputs/input1.txt")).unwrap();
+    let original = read_vec_ints(String::from("Inputs/input01.txt")).unwrap();
 
     const COUNT: u128 = 10000;
     let mut sum = 0;

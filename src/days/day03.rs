@@ -1,4 +1,4 @@
-use crate::misc::error::{AoCError, AoCResult};
+use crate::misc::error::AoCResult;
 use crate::misc::{get_values, read_vec_string};
 
 pub fn run() -> AoCResult<usize> {
