@@ -27,6 +27,7 @@ pub fn run() {
 }
 
 // Result is 802011
+/// Needs sorted data
 fn part_1(data: &[usize]) -> AoCResult<usize> {
     let mut should_loop = true;
     let mut a_pointer = data.len() - 1;
@@ -61,6 +62,7 @@ pub fn bench(data: &mut Vec<usize>) {
     part_2_b(data).unwrap();
 }
 // Result is 802011
+///Needs sorted data
 fn part_2_a(data: &[usize]) -> AoCResult<usize> {
     let mut a_pointer = data.len() - 1;
     while a_pointer != 0 {
@@ -135,7 +137,8 @@ mod tests {
 
     #[test]
     fn part_1_input() {
-        let data = read_vec_ints(String::from("Inputs/input01.txt")).unwrap();
+        let mut data = read_vec_ints(String::from("Inputs/input01.txt")).unwrap();
+        data.sort();
         let res = part_1(&data).unwrap();
         //assert!(res.is_ok());
         //let res = res.unwrap();
@@ -143,7 +146,8 @@ mod tests {
     }
     #[test]
     fn part_2_input() {
-        let data = read_vec_ints(String::from("Inputs/input01.txt")).unwrap();
+        let mut data = read_vec_ints(String::from("Inputs/input01.txt")).unwrap();
+        data.sort();
         let res = part_2_a(&data).unwrap();
         //assert!(res.is_ok());
         //let res = res.unwrap();

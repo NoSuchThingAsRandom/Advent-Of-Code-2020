@@ -2,7 +2,7 @@ mod computer;
 mod days;
 mod misc;
 fn main() {
-    days::day01::run();
+    days::day01a::run();
 }
 fn start() {
     days::day01::run();
