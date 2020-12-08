@@ -1,11 +1,12 @@
 use crate::misc::error::AoCResult;
 use crate::misc::read_vec_string;
 use std::collections::{HashMap, HashSet, VecDeque};
-
+const DEBUG: bool = false;
 pub fn run() -> AoCResult<usize> {
-    println!("Test");
     let original = read_vec_string(String::from("Inputs/input07.txt")).unwrap();
-    println!("Bags: {:?}", parse_bags(&original));
+    if DEBUG {
+        println!("Bags: {:?}", parse_bags(&original));
+    }
     println!("Possible bags: {}", part_1(&original).unwrap());
     println!("Bag count: {}", part_2(&original).unwrap());
     Ok(0)
@@ -76,10 +77,12 @@ pub fn part_1(data: &[String]) -> AoCResult<usize> {
 }
 fn recurse(current_bag: &str, bags: &HashMap<String, Vec<(String, u16)>>, depth: u16) -> u16 {
     if current_bag.eq("oother") {
-        for _ in 0..depth {
-            print!("    ");
+        if DEBUG {
+            for _ in 0..depth {
+                print!("    ");
+            }
+            println!("1");
         }
-        println!("1");
         return 1;
     }
     let mut total = 1;
@@ -88,20 +91,70 @@ fn recurse(current_bag: &str, bags: &HashMap<String, Vec<(String, u16)>>, depth:
             total += 0;
         } else {
             let count = recurse(&bag.0, &bags, depth + 1) * bag.1;
-            for _ in 0..depth {
-                print!("    ");
+            if DEBUG {
+                for _ in 0..depth {
+                    print!("    ");
+                }
+                println!(":  {}, {}, {}", bag.0, bag.1, count);
             }
-            println!(":  {}, {}, {}", bag.0, bag.1, count);
             total += count;
         }
     }
-    for _ in 0..depth {
-        print!("    ");
+    if DEBUG {
+        for _ in 0..depth {
+            print!("    ");
+        }
+        println!("total {}", total);
     }
-    println!("total {}", total);
     total
 }
 pub fn part_2(data: &[String]) -> AoCResult<usize> {
     let bags = parse_bags(data)?;
     Ok(recurse(&"shinygold".to_string(), &bags, 0) as usize - 1)
+}
+#[cfg(test)]
+mod tests {
+    use crate::days::day07::{parse_bags, part_1, part_2};
+    use crate::misc::read_vec_string;
+
+    #[test]
+    fn part_1_test() {
+        let data = read_vec_string(String::from("Inputs/test07a.txt")).unwrap();
+        let res = part_1(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 4);
+    }
+    #[test]
+    fn part_2a_test() {
+        let data = read_vec_string(String::from("Inputs/test07a.txt")).unwrap();
+        let res = part_2(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 32);
+    }
+    #[test]
+    fn part_2b_test() {
+        let data = read_vec_string(String::from("Inputs/test07b.txt")).unwrap();
+        let res = part_2(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 126);
+    }
+    #[test]
+    fn part_1_input() {
+        let data = read_vec_string(String::from("Inputs/input07.txt")).unwrap();
+        let res = part_1(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 300);
+    }
+    #[test]
+    fn part_2_input() {
+        let data = read_vec_string(String::from("Inputs/input07.txt")).unwrap();
+        let res = part_2(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 8030);
+    }
 }

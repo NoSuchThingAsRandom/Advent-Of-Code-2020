@@ -49,3 +49,24 @@ fn slope_checker(data: &[String], x_increment: usize, y_increment: usize) -> AoC
     }
     Ok(trees)
 }
+#[cfg(test)]
+mod tests {
+    use crate::days::day03::{part_1, part_2};
+    use crate::misc::read_vec_string;
+    #[test]
+    fn part_1_input() {
+        let data = read_vec_string(String::from("Inputs/input03.txt")).unwrap();
+        let res = part_1(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 173);
+    }
+    #[test]
+    fn part_2_input() {
+        let data = read_vec_string(String::from("Inputs/input03.txt")).unwrap();
+        let res = part_2(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 4385176320);
+    }
+}

@@ -51,3 +51,42 @@ pub fn part_2(data: &[String]) -> AoCResult<usize> {
     }
     Err(AoCError::new(String::from("Couldn't get seat!")))
 }
+#[cfg(test)]
+mod tests {
+    use crate::days::day05::{get_seat_id, part_1, part_2};
+    use crate::misc::read_vec_string;
+
+    #[test]
+    fn check_seat_id() {
+        let data = read_vec_string(String::from("Inputs/test05.txt")).unwrap();
+        let values: [usize; 4] = [357, 567, 119, 820];
+        for (index, seat) in data.iter().enumerate() {
+            assert_eq!(get_seat_id(seat), values[index]);
+        }
+    }
+
+    #[test]
+    fn part_1_test() {
+        let data = read_vec_string(String::from("Inputs/test05.txt")).unwrap();
+        let res = part_1(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 820);
+    }
+    #[test]
+    fn part_1_input() {
+        let data = read_vec_string(String::from("Inputs/input05.txt")).unwrap();
+        let res = part_1(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 848);
+    }
+    #[test]
+    fn part_2_input() {
+        let data = read_vec_string(String::from("Inputs/input05.txt")).unwrap();
+        let res = part_2(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 682);
+    }
+}

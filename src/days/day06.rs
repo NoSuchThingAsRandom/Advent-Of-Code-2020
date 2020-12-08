@@ -47,3 +47,40 @@ pub fn part_2(data: &[String]) -> AoCResult<usize> {
     total_count += answered_questions.len();
     Ok(total_count)
 }
+#[cfg(test)]
+mod tests {
+    use crate::days::day06::{part_1, part_2};
+    use crate::misc::read_vec_string;
+
+    #[test]
+    fn part_1_test() {
+        let data = read_vec_string(String::from("Inputs/test06.txt")).unwrap();
+        let res = part_1(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 11);
+    }
+    #[test]
+    fn part_1_input() {
+        let data = read_vec_string(String::from("Inputs/input06.txt")).unwrap();
+        let res = part_1(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 6565);
+    }
+    #[test]
+    fn part_2_test() {
+        let data = read_vec_string(String::from("Inputs/test06.txt")).unwrap();
+        let res = part_2(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 6);
+    }
+    fn part_2_input() {
+        let data = read_vec_string(String::from("Inputs/input06.txt")).unwrap();
+        let res = part_1(&data);
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 3137);
+    }
+}

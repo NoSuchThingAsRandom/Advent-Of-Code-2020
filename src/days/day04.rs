@@ -5,8 +5,52 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 pub fn run() -> AoCResult<usize> {
-    println!("{}", part_1()?);
+    println!("{}", part_1(String::from("Inputs/input04.txt"))?);
+    println!("{}", part_2(String::from("Inputs/input04.txt"))?);
     Ok(0)
+}
+
+fn part_1(filename: String) -> AoCResult<usize> {
+    const REQUIRED_FIELDS: [&str; 7] = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+    let file = File::open(filename)?;
+    let reader = BufReader::new(file);
+    let mut data = Vec::new();
+    let mut current_passport: HashMap<String, String> = HashMap::new();
+    let mut valid_passport_count = 0;
+    for line in reader.lines() {
+        let line = line?;
+        if line.eq("") {
+            let mut valid = true;
+            for field in REQUIRED_FIELDS.iter() {
+                if let Some(value) = current_passport.get(*field) {
+                } else {
+                    valid = false;
+                    break;
+                }
+            }
+            if valid {
+                valid_passport_count += 1;
+            }
+            data.push(current_passport);
+            current_passport = HashMap::new();
+        } else {
+            let values = line.split(' ');
+            for entry in values {
+                let mut split_entry = entry.split(':');
+                current_passport.insert(
+                    split_entry
+                        .next()
+                        .ok_or_else(|| AoCError::new(String::from("Couldn't get key value")))?
+                        .to_string(),
+                    split_entry
+                        .next()
+                        .ok_or_else(|| AoCError::new(format!("Couldn't get valueas: ")))?
+                        .to_string(),
+                );
+            }
+        }
+    }
+    Ok(valid_passport_count)
 }
 
 fn check_passport(passport: &HashMap<String, String>) -> AoCResult<bool> {
@@ -76,8 +120,8 @@ fn check_passport(passport: &HashMap<String, String>) -> AoCResult<bool> {
     }
     Ok(true)
 }
-fn part_1() -> AoCResult<usize> {
-    let file = File::open("Inputs/input04.txt")?;
+fn part_2(filename: String) -> AoCResult<usize> {
+    let file = File::open(filename)?;
     let reader = BufReader::new(file);
     let mut data = Vec::new();
     let mut current_passport: HashMap<String, String> = HashMap::new();
@@ -111,4 +155,67 @@ fn part_1() -> AoCResult<usize> {
         valid_passport_count += 1;
     }
     Ok(valid_passport_count)
+}
+#[cfg(test)]
+mod tests {
+    use crate::days::day04::{part_1, part_2};
+    use crate::misc::read_vec_string;
+
+    #[test]
+    fn part_1a_test() {
+        let res = part_1(String::from("Inputs/test04a.txt"));
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 2);
+    }
+    #[test]
+    fn part_1b_test() {
+        let res = part_1(String::from("Inputs/test04b.txt"));
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 3);
+    }
+    #[test]
+    fn part_1c_test() {
+        let res = part_1(String::from("Inputs/test04c.txt"));
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 3);
+    }
+    #[test]
+    fn part_2a_test() {
+        let res = part_2(String::from("Inputs/test04a.txt"));
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 2);
+    }
+    #[test]
+    fn part_2b_test() {
+        let res = part_2(String::from("Inputs/test04b.txt"));
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 0);
+    }
+    #[test]
+    fn part_2c_test() {
+        let res = part_2(String::from("Inputs/test04c.txt"));
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 4);
+    }
+
+    #[test]
+    fn part_1_input() {
+        let res = part_1(String::from("Inputs/input04.txt"));
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 202);
+    }
+    #[test]
+    fn part_2_input() {
+        let res = part_2(String::from("Inputs/input04.txt"));
+        assert!(res.is_ok());
+        let res = res.unwrap();
+        assert_eq!(res, 137);
+    }
 }
