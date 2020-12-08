@@ -1,28 +1,26 @@
 //! Src: https://github.com/m-rutter/advent-of-code/blob/master/src/error.rs
-//! AoC error module
+//! Computer error module
 #![allow(dead_code)]
 use std::error::Error as StdError;
 use std::fmt;
 
 // Convenience Result type
-pub type AoCResult<T> = std::result::Result<T, AoCError>;
+pub type ComputerResult<T> = std::result::Result<T, ComputerError>;
 
 /// An error type for the Advent of Code crate
 #[derive(Debug)]
-pub struct AoCError {
+pub struct ComputerError {
     kind: ErrorKind,
     source: Option<Box<dyn StdError + Send + Sync + 'static>>,
 }
 
-impl AoCError {
-    pub fn new(msg: String) -> AoCError {
+impl ComputerError {
+    pub fn new(msg: String) -> ComputerError {
         Self {
             kind: ErrorKind::Msg(msg),
             source: None,
         }
     }
-
-    #[allow(dead_code)]
     ///Creates generic error with a message and a cause
     pub(crate) fn chain(
         value: &impl ToString,
@@ -33,9 +31,16 @@ impl AoCError {
             source: Some(cause.into()),
         }
     }
+    pub fn from_option<T>(option: Option<T>) -> ComputerResult<T> {
+        if let Some(val) = option {
+            Ok(val)
+        } else {
+            Err(ComputerError::from(ErrorKind::OutOfBoundsError))
+        }
+    }
 }
 
-impl StdError for AoCError {
+impl StdError for ComputerError {
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         self.source
             .as_ref()
@@ -53,12 +58,14 @@ pub enum ErrorKind {
     /// Generic error message
     Msg(String),
     /// Error when parsing provided input
-    InputParse,
-    /// Error when the day is not supported or does not exist
-    UnsupportedDay { year: u16, day: u8 },
+    InputParse(String),
+    /// Error when executing code
+    ProcessingError,
+    /// Out of bounds error
+    OutOfBoundsError,
 }
 
-impl From<ErrorKind> for AoCError {
+impl From<ErrorKind> for ComputerError {
     fn from(error: ErrorKind) -> Self {
         Self {
             kind: error,
@@ -67,41 +74,37 @@ impl From<ErrorKind> for AoCError {
     }
 }
 
-impl From<std::num::ParseIntError> for AoCError {
+impl From<std::num::ParseIntError> for ComputerError {
     fn from(error: std::num::ParseIntError) -> Self {
         Self {
-            kind: ErrorKind::InputParse,
+            kind: ErrorKind::InputParse(String::from("Couldn't parse integer")),
             source: Some(error.into()),
         }
     }
 }
-impl From<std::io::Error> for AoCError {
+impl From<std::io::Error> for ComputerError {
     fn from(error: std::io::Error) -> Self {
         Self {
-            kind: ErrorKind::InputParse,
+            kind: ErrorKind::ProcessingError,
             source: Some(error.into()),
         }
     }
 }
-impl From<regex::Error> for AoCError {
+impl From<regex::Error> for ComputerError {
     fn from(error: regex::Error) -> Self {
         Self {
-            kind: ErrorKind::InputParse,
+            kind: ErrorKind::InputParse(String::from("Couldn't parse regex")),
             source: Some(error.into()),
         }
     }
 }
-
-impl fmt::Display for AoCError {
+impl fmt::Display for ComputerError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self.kind {
             ErrorKind::Msg(message) => write!(f, "{}", message),
-            ErrorKind::InputParse => write!(f, "Error parsing input"),
-            ErrorKind::UnsupportedDay { day, year } => write!(
-                f,
-                "Day {} for year {} either does not exist or is unsupported",
-                day, year
-            ),
+            ErrorKind::InputParse(message) => write!(f, "Error parsing input: {}", message),
+            ErrorKind::ProcessingError => write!(f, "Error when executing code"),
+            ErrorKind::OutOfBoundsError => write!(f, "Tried to access memory out of bounds!"),
         }
     }
 }

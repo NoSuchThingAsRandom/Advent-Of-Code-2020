@@ -1,13 +1,6 @@
 use crate::misc::error::AoCResult;
 use crate::misc::read_vec_string;
 use std::collections::{HashMap, HashSet, VecDeque};
-use std::hash::Hash;
-
-struct Bag {
-    name: String,
-    parent_bags: Vec<Bag>,
-    child_bags: Vec<Bag>,
-}
 
 pub fn run() -> AoCResult<usize> {
     println!("Test");
@@ -21,19 +14,18 @@ pub fn run() -> AoCResult<usize> {
 fn parse_bags(data: &[String]) -> AoCResult<HashMap<String, Vec<(String, u16)>>> {
     let mut bags: HashMap<String, Vec<(String, u16)>> = HashMap::new();
     for line in data {
-        let mut x = line
+        let bag_split = line
             .to_lowercase()
             .replace("bags", "")
             .replace("bag", "")
             .replace(".", "")
             .replace(" ", "");
-        let mut y = x.split("contain");
-        //println!("{}", x);
-        let selected_bag = y.next().unwrap();
-        let mut contained_bags: Vec<(String, u16)> = y
+        let mut bag_split = bag_split.split("contain");
+        let selected_bag = bag_split.next().unwrap();
+        let mut contained_bags: Vec<(String, u16)> = bag_split
             .next()
             .unwrap()
-            .split(",")
+            .split(',')
             .map(|x| {
                 let mut chars = x.chars();
                 let num_char = chars.next().unwrap();
@@ -43,17 +35,6 @@ fn parse_bags(data: &[String]) -> AoCResult<HashMap<String, Vec<(String, u16)>>>
                     0
                 };
                 (chars.collect(), num)
-                /*                (
-                                    x.chars().skip(1).collect(),
-                                    x.chars()
-                                        .nth(0)
-                                        .unwrap()
-                                        .is_numeric()
-                                        .to_string()
-                                        .parse()
-                                        .unwrap(),
-                                )
-                */
             })
             .collect();
         if let Some(bag) = bags.get_mut(selected_bag) {
@@ -93,7 +74,7 @@ pub fn part_1(data: &[String]) -> AoCResult<usize> {
     }
     Ok(output.len())
 }
-fn recurse(current_bag: &String, bags: &HashMap<String, Vec<(String, u16)>>, depth: u16) -> u16 {
+fn recurse(current_bag: &str, bags: &HashMap<String, Vec<(String, u16)>>, depth: u16) -> u16 {
     if current_bag.eq("oother") {
         for _ in 0..depth {
             print!("    ");

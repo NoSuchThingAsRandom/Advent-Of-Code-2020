@@ -9,6 +9,8 @@ edition = "2018"
 [dependencies]
 rand = "0.7.3"
 regex = "1.4.2"
+threadpool = "1.8.1"
+
 [dev-dependencies]
 criterion = "0.3"
 
