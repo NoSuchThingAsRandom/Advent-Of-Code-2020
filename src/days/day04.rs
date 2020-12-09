@@ -22,8 +22,7 @@ fn part_1(filename: String) -> AoCResult<usize> {
         if line.eq("") {
             let mut valid = true;
             for field in REQUIRED_FIELDS.iter() {
-                if let Some(value) = current_passport.get(*field) {
-                } else {
+                if current_passport.get(*field).is_none() {
                     valid = false;
                     break;
                 }
@@ -44,7 +43,7 @@ fn part_1(filename: String) -> AoCResult<usize> {
                         .to_string(),
                     split_entry
                         .next()
-                        .ok_or_else(|| AoCError::new(format!("Couldn't get valueas: ")))?
+                        .ok_or_else(|| AoCError::new("Couldn\'t get values: ".to_string()))?
                         .to_string(),
                 );
             }

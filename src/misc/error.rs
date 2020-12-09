@@ -33,6 +33,15 @@ impl AoCError {
             source: Some(cause.into()),
         }
     }
+    pub fn from_option<T>(option: Option<T>) -> AoCResult<T> {
+        if let Some(val) = option {
+            Ok(val)
+        } else {
+            Err(AoCError::from(ErrorKind::Msg(String::from(
+                "Failed to unwrap option",
+            ))))
+        }
+    }
 }
 
 impl StdError for AoCError {
