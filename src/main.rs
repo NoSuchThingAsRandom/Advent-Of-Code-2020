@@ -2,13 +2,12 @@ mod computer;
 mod days;
 mod misc;
 fn main() {
-    days::day09::run();
-    start();
+    days::day10::run();
+    //start();
 }
 fn start() {
     days::day01::run();
-    days::day01a::run();
-    days::day01::bench(&mut Vec::new());
+    //days::day01::bench(&mut Vec::new());
     days::day02::run().unwrap();
     days::day03::run().unwrap();
     days::day04::run().unwrap();

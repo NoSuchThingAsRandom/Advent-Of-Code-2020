@@ -5,10 +5,9 @@ use std::cmp::Ordering;
 use std::time::Instant;
 
 pub fn run() {
-    let mut rng = rand::thread_rng();
-    let original = read_vec_ints(String::from("Inputs/test01.txt")).unwrap();
+    let original = read_vec_ints(String::from("Inputs/input01.txt")).unwrap();
 
-    const COUNT: u128 = 1;
+    /*    const COUNT: u128 = 1;
     let mut sum = 0;
     for _ in 0..COUNT {
         let mut data = original.clone();
@@ -19,11 +18,14 @@ pub fn run() {
         let _b = part_2_a(&data);
         let end = Instant::now();
         sum += end.duration_since(start).as_micros()
-    }
-    let data = original;
-    println!("Time A {}", (sum / COUNT));
+    }*/
+    let mut data = original.clone();
+    data.sort();
+    //println!("Time A {}", (sum / COUNT));
     println!("Part 1: {}", part_1(&data).unwrap());
-    println!("Part 2: {}", part_2_b(&data).unwrap());
+    let mut data = original.clone();
+    data.sort();
+    println!("Part 2: {}", part_2_a(&data).unwrap());
 }
 
 // Result is 802011
