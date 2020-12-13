@@ -3,7 +3,7 @@ mod computer;
 mod days;
 mod misc;
 fn main() {
-    days::day11::run();
+    days::day12::run();
     //start();
 }
 fn start() {
@@ -18,4 +18,5 @@ fn start() {
     days::day08::run().unwrap();
     days::day09::run();
     days::day10::run();
+    days::day11::run();
 }
