@@ -1,8 +1,9 @@
+#![allow(dead_code)]
 mod computer;
 mod days;
 mod misc;
 fn main() {
-    days::day10::run();
+    days::day11::run();
     //start();
 }
 fn start() {
@@ -15,4 +16,6 @@ fn start() {
     days::day06::run().unwrap();
     days::day07::run().unwrap();
     days::day08::run().unwrap();
+    days::day09::run();
+    days::day10::run();
 }

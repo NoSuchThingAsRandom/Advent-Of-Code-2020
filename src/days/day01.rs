@@ -1,8 +1,7 @@
 use crate::misc::error::{AoCError, AoCResult};
 use crate::misc::read_vec_ints;
-use rand::seq::SliceRandom;
+
 use std::cmp::Ordering;
-use std::time::Instant;
 
 pub fn run() {
     let original = read_vec_ints(String::from("Inputs/input01.txt")).unwrap();
@@ -23,7 +22,7 @@ pub fn run() {
     data.sort();
     //println!("Time A {}", (sum / COUNT));
     println!("Part 1: {}", part_1(&data).unwrap());
-    let mut data = original.clone();
+    let mut data = original;
     data.sort();
     println!("Part 2: {}", part_2_a(&data).unwrap());
 }

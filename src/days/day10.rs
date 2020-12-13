@@ -89,19 +89,17 @@ fn find_critical_path(mut volts: Vec<usize>) -> AoCResult<Vec<usize>> {
     Ok(path)
 }
 
-fn get_possible() -> Vec<Vec<usize>> {}
-
-fn part_2d(mut volts: Vec<usize>) -> AoCResult<usize> {
+fn part_2d(volts: Vec<usize>) -> AoCResult<usize> {
     let mut possible: HashMap<usize, HashSet<Vec<usize>>> = HashMap::new();
     for volt in &volts {
         possible.insert(*volt, HashSet::new());
         AoCError::from_option(possible.get_mut(volt))?.insert(vec![*volt]);
     }
-    for target in 0..*AoCError::from_option(volts.last())? {
-        for (value, amount) in possible.iter() {
-            let count = *value;
-            while count < target {}
-            possible.insert(1, 1);
+    for _target in 0..*AoCError::from_option(volts.last())? {
+        for (value, _amount) in possible.iter() {
+            let _count = *value;
+            //while count < target {}
+            //possible.insert(1, vec![1 as usize]);
         }
     }
     Ok(0)
@@ -115,11 +113,11 @@ fn part_2c(mut volts: Vec<usize>) -> AoCResult<usize> {
     let mut iterations = 1;
     for crit_index in 0..critical.len() - 1 {
         let mut possibilities = 1;
-        for index in 0..volts.len() {
-            if volts[index] >= critical[crit_index + 1] {
+        for volt in &volts {
+            if volt >= &critical[crit_index + 1] {
                 break;
             }
-            if volts[index] <= critical[crit_index] {
+            if volt <= &critical[crit_index] {
             } else {
                 possibilities += 1;
             }
@@ -190,12 +188,12 @@ fn part_2(volts: &[usize], current_index: usize, depth: usize, target: usize) ->
 #[cfg(test)]
 mod tests {
     use crate::days::day10::{part_1, part_2c};
-    use crate::misc::{read_vec_ints, read_vec_string};
+    use crate::misc::read_vec_ints;
 
     #[test]
     fn part_1a_test() {
         let data = read_vec_ints(String::from("Inputs/test10a.txt")).unwrap();
-        let mut result = part_1(data);
+        let result = part_1(data);
         assert!(result.is_ok());
         let result = result.unwrap();
         assert_eq!(result, 35);
@@ -203,7 +201,7 @@ mod tests {
     #[test]
     fn part_1b_test() {
         let data = read_vec_ints(String::from("Inputs/test10b.txt")).unwrap();
-        let mut result = part_1(data);
+        let result = part_1(data);
         assert!(result.is_ok());
         let result = result.unwrap();
         assert_eq!(result, 220);
@@ -211,7 +209,7 @@ mod tests {
     #[test]
     fn part_1_input() {
         let data = read_vec_ints(String::from("Inputs/input10.txt")).unwrap();
-        let mut result = part_1(data);
+        let result = part_1(data);
         assert!(result.is_ok());
         let result = result.unwrap();
         assert_eq!(result, 2760);
@@ -223,7 +221,7 @@ mod tests {
         data.sort();
         data.push(data.last().unwrap() + 3);
 
-        let mut result = part_2c(data);
+        let result = part_2c(data);
         assert!(result.is_ok());
         let result = result.unwrap();
         assert_eq!(result, 8);
@@ -234,7 +232,7 @@ mod tests {
         data.push(0);
         data.sort();
         data.push(data.last().unwrap() + 3);
-        let mut result = part_2c(data);
+        let result = part_2c(data);
         assert!(result.is_ok());
         let result = result.unwrap();
         assert_eq!(result, 19208);
