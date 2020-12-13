@@ -1,5 +1,6 @@
 use crate::misc::error::{AoCError, AoCResult};
 use crate::misc::read_vec_ints;
+use std::collections::{HashMap, HashSet};
 
 pub fn run() {
     let mut data = read_vec_ints(String::from("Inputs/test10a.txt")).unwrap();
@@ -31,7 +32,7 @@ fn part_1(mut volts: Vec<usize>) -> AoCResult<usize> {
 }
 
 // Has to be sorted data
-fn find_critical_path(mut volts: Vec<usize>) -> AoCResult<Vec<usize>> {
+fn find_critical_path_reversed(mut volts: Vec<usize>) -> AoCResult<Vec<usize>> {
     //volts.push(0);
     volts.sort();
     volts.reverse();
@@ -58,6 +59,52 @@ fn find_critical_path(mut volts: Vec<usize>) -> AoCResult<Vec<usize>> {
     //println!("Path {:?}", path);
     path.reverse();
     Ok(path)
+}
+// Has to be sorted data
+fn find_critical_path(mut volts: Vec<usize>) -> AoCResult<Vec<usize>> {
+    //volts.push(0);
+    volts.sort();
+    let mut index = 0;
+    let mut temp_index = 0;
+
+    let mut current = volts[0];
+
+    let mut path = Vec::new();
+    path.push(current);
+
+    while current != *AoCError::from_option(volts.last())? {
+        for x in index..volts.len() {
+            let dif = volts[x] - volts[index];
+            if 0 < dif && dif <= 3 {
+                //println!("Current: {}, X_Volt {}, Dif: {}", current, volts[x], dif);
+                temp_index = x;
+            }
+        }
+        index = temp_index;
+        current = volts[temp_index];
+        path.push(current);
+    }
+    //println!("Path {:?}", path);
+    //path.reverse();
+    Ok(path)
+}
+
+fn get_possible() -> Vec<Vec<usize>> {}
+
+fn part_2d(mut volts: Vec<usize>) -> AoCResult<usize> {
+    let mut possible: HashMap<usize, HashSet<Vec<usize>>> = HashMap::new();
+    for volt in &volts {
+        possible.insert(*volt, HashSet::new());
+        AoCError::from_option(possible.get_mut(volt))?.insert(vec![*volt]);
+    }
+    for target in 0..*AoCError::from_option(volts.last())? {
+        for (value, amount) in possible.iter() {
+            let count = *value;
+            while count < target {}
+            possible.insert(1, 1);
+        }
+    }
+    Ok(0)
 }
 
 fn part_2c(mut volts: Vec<usize>) -> AoCResult<usize> {
@@ -173,6 +220,9 @@ mod tests {
     fn part_2a_test() {
         let mut data = read_vec_ints(String::from("Inputs/test10a.txt")).unwrap();
         data.push(0);
+        data.sort();
+        data.push(data.last().unwrap() + 3);
+
         let mut result = part_2c(data);
         assert!(result.is_ok());
         let result = result.unwrap();
@@ -182,6 +232,8 @@ mod tests {
     fn part_2b_test() {
         let mut data = read_vec_ints(String::from("Inputs/test10b.txt")).unwrap();
         data.push(0);
+        data.sort();
+        data.push(data.last().unwrap() + 3);
         let mut result = part_2c(data);
         assert!(result.is_ok());
         let result = result.unwrap();
