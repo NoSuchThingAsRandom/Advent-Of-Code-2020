@@ -158,8 +158,7 @@ fn part_2(filename: String) -> AoCResult<usize> {
 #[cfg(test)]
 mod tests {
     use crate::days::day04::{part_1, part_2};
-    use crate::misc::read_vec_string;
-
+    
     #[test]
     fn part_1a_test() {
         let res = part_1(String::from("Inputs/test04a.txt"));

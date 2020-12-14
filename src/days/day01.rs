@@ -134,7 +134,7 @@ fn part_2_b(data: &[usize]) -> AoCResult<usize> {
 #[cfg(test)]
 mod tests {
     use crate::days::day01::{part_1, part_2_a};
-    use crate::misc::{read_vec_ints, read_vec_string};
+    use crate::misc::read_vec_ints;
 
     #[test]
     fn part_1_input() {

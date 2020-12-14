@@ -90,7 +90,7 @@ fn part_2(nums: Vec<usize>, target: usize) -> AoCResult<usize> {
 #[cfg(test)]
 mod tests {
     use crate::days::day09::{part_1, part_2};
-    use crate::misc::{read_vec_ints, read_vec_string};
+    use crate::misc::read_vec_ints;
 
     #[test]
     fn part_1_test() {

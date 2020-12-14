@@ -1,17 +1,15 @@
 use crate::misc::error::{AoCError, AoCResult};
 use crate::misc::read_vec_string;
-use std::str::FromStr;
-use std::time::Instant;
 
 const DEBUG: bool = false;
 pub fn run() {
     println!(
         "C: {}\n\n",
-        chinese_remainder(&vec![1, 4, 6], &vec![3, 5, 7]).unwrap()
+        chinese_remainder(&[1, 4, 6], &[3, 5, 7]).unwrap()
     );
     println!(
         "\nA: {}",
-        chinese_remainder(&vec![0, 12, 55, 25, 12], &vec![7, 13, 59, 31, 19]).unwrap()
+        chinese_remainder(&[0, 12, 55, 25, 12], &[7, 13, 59, 31, 19]).unwrap()
     );
     /*    let x = 1068781;
     println!("{} {}", 7, x % 7);
@@ -35,7 +33,7 @@ pub fn run() {
     println!("D: {}", chinese_reminder(vec![3, 4, 5], vec![2, 3, 1]));
     //println!("A: {}", euclid_algorithm_iterative(5086356080, 4812496243));*/
     //println!("B: {}", euclid_algorithm_recursive(5086356080, 4812496243));
-    let data = read_vec_string(String::from("Inputs/test13.txt")).unwrap();
+    //let data = read_vec_string(String::from("Inputs/test13.txt")).unwrap();
     let data = read_vec_string(String::from("Inputs/input13.txt")).unwrap();
     //println!("Part 1: {}", part_1(&data).unwrap());
     println!("Part 2: {}", part_2(&data, 100000000000000).unwrap());
@@ -43,7 +41,7 @@ pub fn run() {
 
 fn part_1(data: &[String]) -> AoCResult<usize> {
     let start_time: usize = AoCError::from_option(data.get(0))?.parse()?;
-    let busses = AoCError::from_option(data.get(1))?.split(",");
+    let busses = AoCError::from_option(data.get(1))?.split(',');
     let mut closest_id = 0;
     let mut min_wait = usize::MAX;
     for bus in busses {
@@ -62,7 +60,7 @@ fn part_1(data: &[String]) -> AoCResult<usize> {
     println!("Wait {}", min_wait);
     Ok(min_wait * closest_id)
 }
-fn check_timestamp(time: usize, busses: &Vec<(usize, usize)>) -> bool {
+fn check_timestamp(time: usize, busses: &[(usize, usize)]) -> bool {
     for bus in busses {
         if (time + bus.1) % bus.0 != 0 {
             return false;
@@ -72,7 +70,7 @@ fn check_timestamp(time: usize, busses: &Vec<(usize, usize)>) -> bool {
 }
 
 fn part_2_brute(data: &[String], start: usize) -> AoCResult<usize> {
-    let busses_str = AoCError::from_option(data.get(1))?.split(",");
+    let busses_str = AoCError::from_option(data.get(1))?.split(',');
     // (Bus ID, Offset)
     let mut busses = Vec::new();
     let mut ids = Vec::new();
@@ -81,7 +79,7 @@ fn part_2_brute(data: &[String], start: usize) -> AoCResult<usize> {
             continue;
         }
         let id: usize = bus.parse()?;
-        ids.push(id.clone());
+        ids.push(id);
         busses.push((id, index));
     }
     ids.sort();
@@ -94,8 +92,8 @@ fn part_2_brute(data: &[String], start: usize) -> AoCResult<usize> {
     println!("Time: {}", current_timestamp);
     Ok(current_timestamp)
 }
-fn part_2(data: &[String], start: usize) -> AoCResult<usize> {
-    let busses_str = AoCError::from_option(data.get(1))?.split(",");
+fn part_2(data: &[String], _start: usize) -> AoCResult<usize> {
+    let busses_str = AoCError::from_option(data.get(1))?.split(',');
     // (Bus ID, Offset)
     let mut busses = Vec::new();
     let mut offsets = Vec::new();
@@ -106,7 +104,7 @@ fn part_2(data: &[String], start: usize) -> AoCResult<usize> {
         }
         let id: usize = bus.parse()?;
         println!("ID: {}, Index: {}", id, index);
-        ids.push(id.clone());
+        ids.push(id);
         busses.push(id as i64);
         let mut rem: i32 = (id as i32) - (index as i32);
         while rem < 0 {
@@ -121,18 +119,18 @@ fn part_2(data: &[String], start: usize) -> AoCResult<usize> {
     Ok(current_timestamp as usize)
 }
 // From rosettacode src: https://rosettacode.org/wiki/Chinese_remainder_theorem#Rust
-fn egcd(a: i64, b: i64) -> (i64, i64, i64) {
-    if a == 0 {
-        (b, 0, 1)
+fn egcd(num_a: i64, num_b: i64) -> (i64, i64, i64) {
+    if num_a == 0 {
+        (num_b, 0, 1)
     } else {
-        let (g, x, y) = egcd(b % a, a);
-        (g, y - (b / a) * x, x)
+        let (gcd, x, y) = egcd(num_b % num_a, num_a);
+        (gcd, y - (num_b / num_a) * x, x)
     }
 }
 
 fn mod_inv(x: i64, n: i64) -> Option<i64> {
-    let (g, x, _) = egcd(x, n);
-    if g == 1 {
+    let (gcd, x, _) = egcd(x, n);
+    if gcd == 1 {
         Some((x % n + n) % n)
     } else {
         None

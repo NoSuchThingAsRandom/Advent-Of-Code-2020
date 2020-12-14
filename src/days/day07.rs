@@ -114,7 +114,7 @@ pub fn part_2(data: &[String]) -> AoCResult<usize> {
 }
 #[cfg(test)]
 mod tests {
-    use crate::days::day07::{parse_bags, part_1, part_2};
+    use crate::days::day07::{part_1, part_2};
     use crate::misc::read_vec_string;
 
     #[test]
