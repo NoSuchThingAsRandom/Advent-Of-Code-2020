@@ -3,7 +3,7 @@ mod computer;
 mod days;
 mod misc;
 fn main() {
-    days::day12::run();
+    days::day13::run();
     //start();
 }
 fn start() {
