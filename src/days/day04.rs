@@ -122,7 +122,7 @@ fn check_passport(passport: &HashMap<String, String>) -> AoCResult<bool> {
 fn part_2(filename: String) -> AoCResult<usize> {
     let file = File::open(filename)?;
     let reader = BufReader::new(file);
-    let mut data = Vec::new();
+    //let mut data = Vec::new();
     let mut current_passport: HashMap<String, String> = HashMap::new();
     let mut valid_passport_count = 0;
     for line in reader.lines() {
@@ -131,7 +131,7 @@ fn part_2(filename: String) -> AoCResult<usize> {
             if check_passport(&current_passport)? {
                 valid_passport_count += 1;
             }
-            data.push(current_passport);
+            //data.push(current_passport);
             current_passport = HashMap::new();
         } else {
             let values = line.split(' ');
@@ -144,7 +144,7 @@ fn part_2(filename: String) -> AoCResult<usize> {
                         .to_string(),
                     split_entry
                         .next()
-                        .ok_or_else(|| AoCError::new("Couldn\'t get valueas: ".to_string()))?
+                        .ok_or_else(|| AoCError::new("Couldn\'t get values: ".to_string()))?
                         .to_string(),
                 );
             }
@@ -158,7 +158,7 @@ fn part_2(filename: String) -> AoCResult<usize> {
 #[cfg(test)]
 mod tests {
     use crate::days::day04::{part_1, part_2};
-    
+
     #[test]
     fn part_1a_test() {
         let res = part_1(String::from("Inputs/test04a.txt"));

@@ -1,9 +1,14 @@
 #![allow(dead_code)]
+
+use std::time::Instant;
+
 mod computer;
 mod days;
 mod misc;
 fn main() {
-    days::day14::run();
+    let start = Instant::now();
+    days::day15::run();
+    println!("{}", start.elapsed().as_secs());
     //start();
 }
 fn start() {

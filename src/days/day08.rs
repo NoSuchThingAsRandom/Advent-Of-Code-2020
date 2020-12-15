@@ -58,9 +58,7 @@ fn part_2(data: &[String]) -> AoCResult<u16> {
             _ => {}
         }
     }
-    while pool.active_count() > 0 {
-        sleep(Duration::from_secs(2));
-    }
+    while pool.active_count() > 0 {}
     Ok(rx.recv().unwrap() as u16)
 }
 #[cfg(test)]
