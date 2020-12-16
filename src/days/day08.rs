@@ -3,8 +3,7 @@ use crate::misc::error::AoCResult;
 use crate::misc::read_vec_string;
 
 use std::sync::mpsc::channel;
-use std::thread::sleep;
-use std::time::Duration;
+
 use threadpool::ThreadPool;
 
 pub fn run() -> AoCResult<usize> {
