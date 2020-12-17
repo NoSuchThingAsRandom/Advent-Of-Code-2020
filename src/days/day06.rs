@@ -3,10 +3,9 @@ use crate::misc::read_vec_string;
 use std::collections::HashSet;
 
 pub fn run() -> AoCResult<usize> {
-    println!("Test");
     let original = read_vec_string(String::from("Inputs/input06.txt")).unwrap();
-    println!("Total Questions: {}", part_1(&original).unwrap());
-    println!("Seats: {}", part_2(&original).unwrap());
+    println!("    Total Questions: {}", part_1(&original).unwrap());
+    println!("    Seats: {}", part_2(&original).unwrap());
     Ok(0)
 }
 

@@ -6,13 +6,13 @@ use std::time::Instant;
 pub fn run() {
     let nums = vec![2, 20, 0, 4, 1, 17];
     //let nums = vec![0, 3, 6];
-    //println!("Part 1: {}", solver_hashmap(&nums, 2020).unwrap());
+    println!("    Part 1: {}", solver_hashmap(&nums, 2020).unwrap());
     let start = Instant::now();
-    println!("Part 2A: {},", solver_hashmap(&nums, 30000000).unwrap());
+    /*println!("Part 2A: {},", solver_hashmap(&nums, 30000000).unwrap());
     println!("Time: {}ms", start.elapsed().as_millis());
-    let start = Instant::now();
-    println!("\nPart 2B: {},", solver_vec(&nums, 30000000).unwrap());
-    println!("Time: {}ms", start.elapsed().as_millis());
+    let start = Instant::now();*/
+    println!("    Part 2: {},", solver_vec(&nums, 30000000).unwrap());
+    //println!("Time: {}ms", start.elapsed().as_millis());
 }
 fn solver_hashmap(data: &[usize], target_number: usize) -> AoCResult<usize> {
     let mut spoken = HashMap::new();
@@ -21,7 +21,7 @@ fn solver_hashmap(data: &[usize], target_number: usize) -> AoCResult<usize> {
     }
     let mut current_num = *data.last().expect("Initial numbers list is empty!");
     spoken.remove(&current_num);
-    println!("Spoken {:?}", spoken);
+    //println!("Spoken {:?}", spoken);
     let mut next_num;
     for turn_index in data.len()..target_number {
         //println!("Turn {}, Says: {}", turn_index, current_num);
@@ -46,7 +46,7 @@ fn solver_vec(data: &[usize], target_number: usize) -> AoCResult<usize> {
     }
     let mut current_num = *data.last().expect("Initial numbers list is empty!");
     spoken.pop();
-    println!("Spoken {:?}", spoken);
+    //println!("Spoken {:?}", spoken);
     let mut next_num;
     for turn_index in data.len()..target_number {
         //println!("Turn {}, Says: {}", turn_index, current_num);
@@ -67,7 +67,7 @@ fn solver_vec(data: &[usize], target_number: usize) -> AoCResult<usize> {
         }
         current_num = next_num;
     }
-    println!("Size: {}", spoken.len());
+    //println!("Size: {}", spoken.len());
 
     Ok(current_num)
 }

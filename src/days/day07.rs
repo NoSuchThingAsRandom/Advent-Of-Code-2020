@@ -7,8 +7,8 @@ pub fn run() -> AoCResult<usize> {
     if DEBUG {
         println!("Bags: {:?}", parse_bags(&original));
     }
-    println!("Possible bags: {}", part_1(&original).unwrap());
-    println!("Bag count: {}", part_2(&original).unwrap());
+    println!("    Possible bags: {}", part_1(&original).unwrap());
+    println!("    Bag count: {}", part_2(&original).unwrap());
     Ok(0)
 }
 

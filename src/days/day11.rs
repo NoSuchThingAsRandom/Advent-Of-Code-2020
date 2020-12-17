@@ -5,8 +5,8 @@ const DEBUG: bool = false;
 pub fn run() {
     let data = read_vec_string(String::from("Inputs/input11.txt")).unwrap();
     //let data = read_vec_string(String::from("Inputs/test11.txt")).unwrap();
-    //println!("Occupied Seats: {}", part_1(&data).unwrap());
-    println!("Occupied Seats: {}", part_2(&data).unwrap());
+    println!("    Part 1: {}", part_1(&data).unwrap());
+    println!("    Part 2: {}", part_2(&data).unwrap());
 }
 
 fn build_seats_from_input(data: &[String]) -> AoCResult<HashMap<(i32, i32), bool>> {

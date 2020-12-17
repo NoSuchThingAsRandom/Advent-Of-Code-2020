@@ -3,9 +3,8 @@ use crate::misc::{get_values, read_vec_string};
 
 pub fn run() -> AoCResult<usize> {
     let original = read_vec_string(String::from("Inputs/input02.txt")).unwrap();
-    println!("Valid passwords: {}", part_1(&original).unwrap());
-    println!("Valid passwords: {}", part_2(&original).unwrap());
-    println!("Test!");
+    println!("    Valid passwords: {}", part_1(&original).unwrap());
+    println!("    Valid passwords: {}", part_2(&original).unwrap());
     Ok(0)
 }
 

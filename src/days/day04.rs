@@ -5,8 +5,11 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 pub fn run() -> AoCResult<usize> {
-    println!("{}", part_1(String::from("Inputs/input04.txt"))?);
-    println!("{}", part_2(String::from("Inputs/input04.txt"))?);
+    println!(
+        "    Part 1: {}",
+        part_1(String::from("Inputs/input04.txt"))?
+    );
+    println!("    Part 2:{}", part_2(String::from("Inputs/input04.txt"))?);
     Ok(0)
 }
 

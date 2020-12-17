@@ -3,8 +3,8 @@ use crate::misc::read_vec_string;
 
 pub fn run() -> AoCResult<usize> {
     let original = read_vec_string(String::from("Inputs/input05.txt")).unwrap();
-    println!("Highest Seat ID: {}", part_1(&original).unwrap());
-    println!("Seats: {}", part_2(&original).unwrap());
+    println!("    Highest Seat ID: {}", part_1(&original).unwrap());
+    println!("    Seats: {}", part_2(&original).unwrap());
     Ok(0)
 }
 
@@ -41,7 +41,6 @@ pub fn part_1(data: &[String]) -> AoCResult<usize> {
 pub fn part_2(data: &[String]) -> AoCResult<usize> {
     let mut seats: Vec<usize> = data.iter().map(|ticket| get_seat_id(ticket)).collect();
     seats.sort();
-    println!("Seats: {:?}", seats);
     let mut index = *seats.get(0).unwrap();
     for seat in seats {
         if seat != index {

@@ -5,8 +5,8 @@ use std::collections::HashMap;
 const DEBUG: bool = false;
 pub fn run() {
     let data = read_vec_string(String::from("Inputs/input14.txt")).unwrap();
-    //println!("Part 1: {}", part_1(&data).unwrap());
-    println!("Part 2: {}", part_2(&data).unwrap());
+    println!("    Part 1: {}", part_1(&data).unwrap());
+    println!("    Part 2: {}", part_2(&data).unwrap());
 }
 
 fn bitstring_to_int(bits: String) -> usize {

@@ -188,8 +188,8 @@ fn part_2(file: String) -> usize {
 }
 pub(crate) fn run() {
     let file = String::from("Inputs/input16.txt");
-    println!("Part 1: {}", part_1(file.clone()));
-    println!("Part 2: {}", part_2(file));
+    println!("    Part 1: {}", part_1(file.clone()));
+    println!("    Part 2: {}", part_2(file));
 }
 #[cfg(test)]
 mod tests {

@@ -7,10 +7,9 @@ use std::sync::mpsc::channel;
 use threadpool::ThreadPool;
 
 pub fn run() -> AoCResult<usize> {
-    println!("Test");
     let data = read_vec_string(String::from("Inputs/input08.txt")).unwrap();
-    println!("Accumulator value: {}", part_1(&data).unwrap());
-    part_2(&data).unwrap();
+    println!("    Accumulator value: {}", part_1(&data).unwrap());
+    println!("    Part 2: {}", part_2(&data).unwrap());
     Ok(0)
 }
 
@@ -32,11 +31,11 @@ fn part_2(data: &[String]) -> AoCResult<u16> {
                 pool.execute(move || {
                     new.memory.get_mut(index).unwrap().opcode = CommandType::Jmp;
                     if new.does_terminate() {
-                        println!(
+                        /*                        println!(
                             "Valid solution: [index: {}, accum: {}]",
                             index,
                             new.get_accumatalator_value()
-                        );
+                        );*/
                     }
                 });
             }
@@ -45,11 +44,11 @@ fn part_2(data: &[String]) -> AoCResult<u16> {
                 pool.execute(move || {
                     new.memory.get_mut(index).unwrap().opcode = CommandType::Nop;
                     if new.does_terminate() {
-                        println!(
+                        /*                        println!(
                             "Valid solution: [index: {}, accum: {}]",
                             index,
                             new.get_accumatalator_value()
-                        );
+                        );*/
                         tx.send(new.get_accumatalator_value()).unwrap();
                     }
                 });

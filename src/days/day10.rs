@@ -6,10 +6,10 @@ pub fn run() {
     let mut data = read_vec_ints(String::from("Inputs/test10a.txt")).unwrap();
     data.sort();
     //data.sort();
-    //println!("Max volt rating: {}", part_1(data.clone()).unwrap());
+    println!("    Max volt rating: {}", part_1(data.clone()).unwrap());
     //println!("Iterations: {}", part_2(&data, 0, 1, 22));
     //println!("Iterations: {:?}", find_critical_path(data).unwrap());
-    println!("Possibile: {:?}", part_2c(data).unwrap());
+    //println!("Possibile: {:?}", part_2c(data).unwrap());
     //println!("Iterations: {}", part_2_a(&data));
 }
 
@@ -27,7 +27,7 @@ fn part_1(mut volts: Vec<usize>) -> AoCResult<usize> {
             break;
         }
     }
-    println!("Highest volt: {}", current_max_volts + 3);
+    //println!("Highest volt: {}", current_max_volts + 3);
     Ok(volt_differences[0] * volt_differences[2])
 }
 

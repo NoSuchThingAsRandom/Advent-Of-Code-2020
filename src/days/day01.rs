@@ -21,10 +21,10 @@ pub fn run() {
     let mut data = original.clone();
     data.sort();
     //println!("Time A {}", (sum / COUNT));
-    println!("Part 1: {}", part_1(&data).unwrap());
+    println!("    Part 1: {}", part_1(&data).unwrap());
     let mut data = original;
     data.sort();
-    println!("Part 2: {}", part_2_a(&data).unwrap());
+    println!("    Part 2: {}", part_2_a(&data).unwrap());
 }
 
 // Result is 802011

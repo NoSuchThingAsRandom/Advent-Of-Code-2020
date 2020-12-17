@@ -3,8 +3,8 @@ use std::collections::{HashMap, HashSet, VecDeque};
 pub fn run() {
     //let data = read_vec_string(String::from("Inputs/test17.txt")).unwrap();
     let data = read_vec_string(String::from("Inputs/input17.txt")).unwrap();
-    println!("Part 1: {}", part_1(&data));
-    println!("Part 1: {}", part_2_neighbour_and_fast_data(&data));
+    println!("    Part 1: {}", part_1(&data));
+    println!("    Part 2: {}", part_2_neighbour_and_fast_data(&data));
     /*let start = Instant::now();
     let res = part_2(&data);
     let time = start.elapsed().as_micros();
@@ -143,7 +143,7 @@ fn part_2_neighbour_and_fast_data(data: &[String]) -> usize {
         fast_lookup = new_lookup;
         cubes = new_cubes;
     }
-    println!("Biggest: {}", max_size);
+    //println!("Biggest: {}", max_size);
     cubes.len()
 }
 

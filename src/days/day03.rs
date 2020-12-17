@@ -3,8 +3,8 @@ use crate::misc::{get_values, read_vec_string};
 
 pub fn run() -> AoCResult<usize> {
     let data = read_vec_string(String::from("Inputs/input03.txt"))?;
-    println!("Trees: {}", part_1(&data)?);
-    println!("Trees: {}", part_2(&data)?);
+    println!("    Trees: {}", part_1(&data)?);
+    println!("    Trees: {}", part_2(&data)?);
     Ok(0)
 }
 

@@ -7,8 +7,8 @@ const DEBUG: bool = false;
 pub fn run() {
     //let data = read_vec_string(String::from("Inputs/test12.txt")).unwrap();
     let data = read_vec_string(String::from("Inputs/input12.txt")).unwrap();
-    println!("Part 1: {}", part_1(&data).unwrap());
-    println!("Part 2: {}", part_2(&data).unwrap());
+    println!("    Part 1: {}", part_1(&data).unwrap());
+    println!("    Part 2: {}", part_2(&data).unwrap());
 }
 #[derive(Debug)]
 enum Direction {

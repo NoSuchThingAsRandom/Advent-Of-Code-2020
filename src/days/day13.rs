@@ -3,14 +3,14 @@ use crate::misc::read_vec_string;
 
 const DEBUG: bool = false;
 pub fn run() {
-    println!(
+    /*    println!(
         "C: {}\n\n",
         chinese_remainder(&[1, 4, 6], &[3, 5, 7]).unwrap()
     );
     println!(
         "\nA: {}",
         chinese_remainder(&[0, 12, 55, 25, 12], &[7, 13, 59, 31, 19]).unwrap()
-    );
+    );*/
     /*    let x = 1068781;
     println!("{} {}", 7, x % 7);
     println!("{} {}", 13, 13 - (x % 13));
@@ -35,8 +35,8 @@ pub fn run() {
     //println!("B: {}", euclid_algorithm_recursive(5086356080, 4812496243));
     //let data = read_vec_string(String::from("Inputs/test13.txt")).unwrap();
     let data = read_vec_string(String::from("Inputs/input13.txt")).unwrap();
-    //println!("Part 1: {}", part_1(&data).unwrap());
-    println!("Part 2: {}", part_2(&data, 100000000000000).unwrap());
+    println!("    Part 1: {}", part_1(&data).unwrap());
+    println!("    Part 2: {}", part_2(&data, 100000000000000).unwrap());
 }
 
 fn part_1(data: &[String]) -> AoCResult<usize> {
@@ -56,8 +56,8 @@ fn part_1(data: &[String]) -> AoCResult<usize> {
             closest_id = id;
         }
     }
-    println!("Closest id {}", closest_id);
-    println!("Wait {}", min_wait);
+    //println!("Closest id {}", closest_id);
+    //println!("Wait {}", min_wait);
     Ok(min_wait * closest_id)
 }
 fn check_timestamp(time: usize, busses: &[(usize, usize)]) -> bool {
@@ -88,8 +88,8 @@ fn part_2_brute(data: &[String], start: usize) -> AoCResult<usize> {
     while !check_timestamp(current_timestamp, &busses) {
         current_timestamp += ids.first().unwrap();
     }
-    println!("Busses: {:?}", busses);
-    println!("Time: {}", current_timestamp);
+    //println!("Busses: {:?}", busses);
+    //println!("Time: {}", current_timestamp);
     Ok(current_timestamp)
 }
 fn part_2(data: &[String], _start: usize) -> AoCResult<usize> {
@@ -103,7 +103,7 @@ fn part_2(data: &[String], _start: usize) -> AoCResult<usize> {
             continue;
         }
         let id: usize = bus.parse()?;
-        println!("ID: {}, Index: {}", id, index);
+        //println!("ID: {}, Index: {}", id, index);
         ids.push(id);
         busses.push(id as i64);
         let mut rem: i32 = (id as i32) - (index as i32);
@@ -112,10 +112,10 @@ fn part_2(data: &[String], _start: usize) -> AoCResult<usize> {
         }
         offsets.push(rem as i64);
     }
-    println!("Busses: {:?}", busses);
-    println!("Offsets: {:?}", offsets);
+    //println!("Busses: {:?}", busses);
+    //println!("Offsets: {:?}", offsets);
     let current_timestamp = chinese_remainder(&offsets, &busses).unwrap();
-    println!("Time: {}", current_timestamp);
+    //println!("Time: {}", current_timestamp);
     Ok(current_timestamp as usize)
 }
 // From rosettacode src: https://rosettacode.org/wiki/Chinese_remainder_theorem#Rust
@@ -204,10 +204,10 @@ mod tests {
         assert_eq!(result, 1202161486);
     }
 
-    /*    #[test]
+    #[test]
     fn part_2_input() {
         let data = read_vec_string(String::from("Inputs/input12.txt")).unwrap();
-        let result = part_2(&data).unwrap();
-        assert_eq!(result, 63843);
-    }*/
+        let result = part_2(&data, 1000000000).unwrap();
+        assert_eq!(result, 725850285300475);
+    }
 }
