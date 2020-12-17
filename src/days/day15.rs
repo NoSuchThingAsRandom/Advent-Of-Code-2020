@@ -1,6 +1,6 @@
 use crate::misc::error::AoCResult;
 use std::collections::HashMap;
-use std::fs::File;
+
 use std::time::Instant;
 
 pub fn run() {
@@ -22,7 +22,7 @@ fn solver_hashmap(data: &[usize], target_number: usize) -> AoCResult<usize> {
     let mut current_num = *data.last().expect("Initial numbers list is empty!");
     spoken.remove(&current_num);
     println!("Spoken {:?}", spoken);
-    let mut next_num: usize = 0;
+    let mut next_num;
     for turn_index in data.len()..target_number {
         //println!("Turn {}, Says: {}", turn_index, current_num);
         if let Some(count) = spoken.get(&current_num) {
@@ -47,7 +47,7 @@ fn solver_vec(data: &[usize], target_number: usize) -> AoCResult<usize> {
     let mut current_num = *data.last().expect("Initial numbers list is empty!");
     spoken.pop();
     println!("Spoken {:?}", spoken);
-    let mut next_num: usize = 0;
+    let mut next_num;
     for turn_index in data.len()..target_number {
         //println!("Turn {}, Says: {}", turn_index, current_num);
         if let Some(count) = spoken.get(current_num) {
@@ -73,7 +73,7 @@ fn solver_vec(data: &[usize], target_number: usize) -> AoCResult<usize> {
 }
 #[cfg(test)]
 mod tests {
-    use crate::days::day15::{solver_hashmap, solver_vec};
+    use crate::days::day15::solver_vec;
 
     /*    #[test]
     fn part_1_hash_test() {

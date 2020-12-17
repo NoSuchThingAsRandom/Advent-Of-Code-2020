@@ -7,7 +7,7 @@ mod days;
 mod misc;
 fn main() {
     let start = Instant::now();
-    days::day16::run();
+    days::day17::run();
     println!("{}", start.elapsed().as_secs());
     //start();
 }
