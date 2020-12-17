@@ -1,27 +1,23 @@
-extern crate fxhash;
 use crate::misc::read_vec_string;
-use fxhash::FxHashMap;
-use fxhash::FxHashSet;
-use std::collections::{BTreeSet, HashSet, VecDeque};
-use std::iter::FromIterator;
-use std::time::Instant;
-
+use std::collections::{HashMap, HashSet, VecDeque};
 pub fn run() {
     //let data = read_vec_string(String::from("Inputs/test17.txt")).unwrap();
     let data = read_vec_string(String::from("Inputs/input17.txt")).unwrap();
-    //part_1(&data);
-    let start = Instant::now();
+    println!("Part 1: {}", part_1(&data));
+    println!("Part 1: {}", part_2_neighbour_and_fast_data(&data));
+    /*let start = Instant::now();
     let res = part_2(&data);
-    let time = start.elapsed().as_millis();
-    println!("Hash: {}, Time: {}", res, time);
+    let time = start.elapsed().as_micros();
+    println!("Simple Hash: {}, Time: {}", res, time);
     let start = Instant::now();
-    for x in 0..10 {
-        part_2_custom(&data);
-    }
+    let res = part_2_neighbour_count(&data);
+    let time = start.elapsed().as_micros();
+    println!("Speed Hash: {}, Time: {}", res, time);
+    let start = Instant::now();
     // Pre simplify: 63ms
-    let res = part_2_custom(&data);
-    let time = start.elapsed().as_millis() / 11;
-    println!("Simepl: {}, Time: {}", res, time);
+    let res = part_2_neighbour_and_fast_data(&data);
+    let time = start.elapsed().as_micros();
+    println!("Neighbour Count And Custom Data: {}, Time: {}", res, time);*/
 }
 
 fn part_1(data: &[String]) -> usize {
@@ -34,7 +30,7 @@ fn part_1(data: &[String]) -> usize {
             }
         }
     }
-    for pass in 0..6 {
+    for _pass in 0..6 {
         let mut visited: HashSet<(isize, isize, isize)> = HashSet::new();
         let mut new_cubes = HashSet::new();
         for test_cube in cubes.iter() {
@@ -67,7 +63,7 @@ fn part_2(data: &[String]) -> usize {
             }
         }
     }
-    for pass in 0..6 {
+    for _pass in 0..6 {
         let mut visited: HashSet<(isize, isize, isize, isize)> = HashSet::new();
         let mut new_cubes = HashSet::new();
         for test_cube in cubes.iter() {
@@ -90,7 +86,8 @@ fn part_2(data: &[String]) -> usize {
     cubes.len()
 }
 
-fn part_2_custom(data: &[String]) -> usize {
+fn part_2_neighbour_and_fast_data(data: &[String]) -> usize {
+    let mut max_size = 0;
     // Build initial state
     let mut fast_lookup = Data::new();
     let mut cubes = Vec::new();
@@ -102,31 +99,111 @@ fn part_2_custom(data: &[String]) -> usize {
             }
         }
     }
-    for pass in 0..6 {
-        let mut visited = Data::new();
+    for _pass in 0..6 {
         let mut new_cubes = Vec::new();
         let mut new_lookup = Data::new();
         for test_cube in cubes {
-            let mut neighbours = get_neighbours_4dim(test_cube);
-            neighbours.retain(|x| !visited.contains(*x));
-            neighbours.retain(|x| !fast_lookup.contains(*x));
-            for n in &neighbours {
-                if check_cube_4dim_data(*n, &mut fast_lookup) {
-                    new_cubes.push(*n);
-                    new_lookup.insert(*n);
+            let mut neighbour_count = 0;
+            for x in &[-1, 0, 1] {
+                for y in &[-1, 0, 1] {
+                    for z in &[-1, 0, 1] {
+                        for w in &[-1, 0, 1] {
+                            if *x == 0 && *y == 0 && *z == 0 && *w == 0 {
+                                continue;
+                            }
+                            let coords = (
+                                x + test_cube.0,
+                                y + test_cube.1,
+                                z + test_cube.2,
+                                w + test_cube.3,
+                            );
+
+                            if fast_lookup.is_set(coords) {
+                                neighbour_count += 1;
+                            }
+                            (&mut fast_lookup).increment(coords)
+                        }
+                    }
                 }
-                visited.insert(*n);
             }
-            if check_cube_4dim_data(test_cube, &mut fast_lookup) {
+
+            if neighbour_count == 2 || neighbour_count == 3 {
                 new_cubes.push(test_cube);
                 new_lookup.insert(test_cube);
             }
-            visited.insert(test_cube);
+        }
+        for n in fast_lookup.altered.clone() {
+            let coords = fast_lookup.convert_raw_to_actual(n);
+            if (!fast_lookup.is_set(coords)) && fast_lookup.get(coords) == 3 {
+                new_cubes.push(coords);
+                new_lookup.insert(coords);
+            }
+        }
+        max_size = max_size.max(fast_lookup.get_biggest_size());
+        fast_lookup = new_lookup;
+        cubes = new_cubes;
+    }
+    println!("Biggest: {}", max_size);
+    cubes.len()
+}
+
+fn part_2_neighbour_count(data: &[String]) -> usize {
+    // Build initial state
+    let mut fast_lookup = HashMap::new();
+    let mut cubes = HashSet::new();
+    for (y, line) in data.iter().enumerate() {
+        for (x, letter) in line.chars().enumerate() {
+            if letter.eq(&'#') {
+                fast_lookup.insert((x as isize, y as isize, 0, 0), 0);
+                cubes.insert((x as isize, y as isize, 0 as isize, 0 as isize));
+            }
+        }
+    }
+    for _pass in 0..6 {
+        let mut new_cubes = HashSet::new();
+        let new_lookup = HashMap::new();
+        for test_cube in &cubes {
+            let mut neighbour_count = 0;
+            for x in &[-1, 0, 1] {
+                for y in &[-1, 0, 1] {
+                    for z in &[-1, 0, 1] {
+                        for w in &[-1, 0, 1] {
+                            if *x == 0 && *y == 0 && *z == 0 && *w == 0 {
+                                continue;
+                            }
+                            let coords = (
+                                x + test_cube.0,
+                                y + test_cube.1,
+                                z + test_cube.2,
+                                w + test_cube.3,
+                            );
+
+                            if cubes.contains(&coords) {
+                                neighbour_count += 1;
+                            }
+                            if let Some(val) = fast_lookup.get_mut(&coords) {
+                                *val += 1;
+                            } else {
+                                fast_lookup.insert(coords, 1);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if neighbour_count == 2 || neighbour_count == 3 {
+                new_cubes.insert(*test_cube);
+            }
+        }
+        for (coords, val) in fast_lookup {
+            if (!cubes.contains(&coords)) && val == 3 {
+                new_cubes.insert(coords);
+            }
         }
         fast_lookup = new_lookup;
         cubes = new_cubes;
     }
-    fast_lookup.len()
+    cubes.len()
 }
 
 fn check_cube_3dim(
@@ -150,17 +227,6 @@ fn check_cube_4dim(
     let neighbour_count = count_neighbours_4dim(test_cube, &cubes);
     // TODO Can optimise this
     if cubes.contains(&test_cube) {
-        if neighbour_count == 2 || neighbour_count == 3 {
-            return true;
-        }
-    } else if neighbour_count == 3 {
-        return true;
-    }
-    false
-}
-fn check_cube_4dim_data(test_cube: (isize, isize, isize, isize), cubes: &mut Data) -> bool {
-    let neighbour_count = count_neighbours_4dim_data(test_cube, cubes);
-    if cubes.contains(test_cube) {
         if neighbour_count == 2 || neighbour_count == 3 {
             return true;
         }
@@ -216,24 +282,6 @@ fn count_neighbours_4dim(
     }
     count
 }
-fn count_neighbours_4dim_data(coords: (isize, isize, isize, isize), cubes: &mut Data) -> usize {
-    let mut count = 0;
-    for x in &[-1, 0, 1] {
-        for y in &[-1, 0, 1] {
-            for z in &[-1, 0, 1] {
-                for w in &[-1, 0, 1] {
-                    if *x == 0 && *y == 0 && *z == 0 && *w == 0 {
-                        continue;
-                    }
-                    if cubes.contains((coords.0 + x, coords.1 + y, coords.2 + z, coords.3 + w)) {
-                        count += 1;
-                    }
-                }
-            }
-        }
-    }
-    count
-}
 
 fn get_neighbours_3dim(coords: (isize, isize, isize)) -> Vec<(isize, isize, isize)> {
     let mut neighbours = Vec::new();
@@ -265,24 +313,6 @@ fn get_neighbours_4dim(coords: (isize, isize, isize, isize)) -> Vec<(isize, isiz
     }
     neighbours
 }
-fn get_neighbours_4dim_data(
-    coords: (isize, isize, isize, isize),
-) -> Vec<(isize, isize, isize, isize)> {
-    let mut neighbours = Vec::new();
-    for x in &[-1, 0, 1] {
-        for y in &[-1, 0, 1] {
-            for z in &[-1, 0, 1] {
-                for w in &[-1, 0, 1] {
-                    if *x == 0 && *y == 0 && *z == 0 && *w == 0 {
-                        continue;
-                    }
-                    neighbours.push((x + coords.0, y + coords.1, z + coords.2, w + coords.3))
-                }
-            }
-        }
-    }
-    neighbours
-}
 
 #[cfg(test)]
 mod tests {
@@ -297,21 +327,43 @@ mod tests {
     }
 
     #[test]
-    fn part_2_test() {
-        let data = read_vec_string(String::from("Inputs/test17.txt")).unwrap();
-        let result = part_2(&data);
-        assert_eq!(result, 848);
-    }
-
-    #[test]
     fn part_1_input() {
         let data = read_vec_string(String::from("Inputs/input17.txt")).unwrap();
         let result = part_1(&data);
         assert_eq!(result, 273);
     }
-
     #[test]
-    fn part_2_input() {
+    fn part_2_simple_test() {
+        let data = read_vec_string(String::from("Inputs/test17.txt")).unwrap();
+        let result = part_2(&data);
+        assert_eq!(result, 848);
+    }
+    #[test]
+    fn part_2_neighbour_count_test() {
+        let data = read_vec_string(String::from("Inputs/test17.txt")).unwrap();
+        let result = part_2(&data);
+        assert_eq!(result, 848);
+    }
+    #[test]
+    fn part_2_neighbour_and_fast_data_test() {
+        let data = read_vec_string(String::from("Inputs/test17.txt")).unwrap();
+        let result = part_2(&data);
+        assert_eq!(result, 848);
+    }
+    #[test]
+    fn part_2_simple_input() {
+        let data = read_vec_string(String::from("Inputs/input17.txt")).unwrap();
+        let result = part_2(&data);
+        assert_eq!(result, 1504);
+    }
+    #[test]
+    fn part_2_neighbour_count_input() {
+        let data = read_vec_string(String::from("Inputs/input17.txt")).unwrap();
+        let result = part_2(&data);
+        assert_eq!(result, 1504);
+    }
+    #[test]
+    fn part_2_neighbour_and_fast_data_input() {
         let data = read_vec_string(String::from("Inputs/input17.txt")).unwrap();
         let result = part_2(&data);
         assert_eq!(result, 1504);
@@ -379,7 +431,7 @@ fn display_cube_state_2dim(cubes: &HashSet<(isize, isize, isize)>) {
         println!("X: {} {}", output.get(0).unwrap().len(), x_zero);
         println!("Y: {} {}", output.len(), y_zero);
         println!("{:?}", output);*/
-        let mut c = output
+        let c = output
             .get_mut((coord.1 + y_zero) as usize)
             .unwrap()
             .get_mut((coord.0 + x_zero) as usize)
@@ -392,7 +444,7 @@ fn display_cube_state_2dim(cubes: &HashSet<(isize, isize, isize)>) {
         for x in y {
             print!("{}", x);
         }
-        print!("\n");
+        println!();
     }
 }
 
@@ -504,7 +556,7 @@ fn display_cube_state_3dim(cubes: &HashSet<(isize, isize, isize)>) {
         println!("Y: {} {}", output.get(0).unwrap().len(), y_zero);
         println!("Z: {} {}", output.len(), z_zero);
         println!("{:?}", output);*/
-        let mut c = output
+        let c = output
             .get_mut((coord.2 + z_zero) as usize)
             .unwrap()
             .get_mut((coord.1 + y_zero) as usize)
@@ -527,9 +579,10 @@ fn display_cube_state_3dim(cubes: &HashSet<(isize, isize, isize)>) {
     }
 }
 
-const GRID_SIZE: usize = 25;
+const GRID_SIZE: usize = 23;
+const IS_ACTUAL_OFFSET: u8 = 50;
 struct Data {
-    data: [[[[bool; GRID_SIZE]; GRID_SIZE]; GRID_SIZE]; GRID_SIZE],
+    data: [[[[u8; GRID_SIZE]; GRID_SIZE]; GRID_SIZE]; GRID_SIZE],
     altered: Vec<(usize, usize, usize, usize)>,
     iter_index: usize,
     x_offset: usize,
@@ -544,7 +597,7 @@ struct Data {
 impl Data {
     fn new() -> Data {
         Data {
-            data: [[[[false; GRID_SIZE]; GRID_SIZE]; GRID_SIZE]; GRID_SIZE],
+            data: [[[[0; GRID_SIZE]; GRID_SIZE]; GRID_SIZE]; GRID_SIZE],
             altered: Vec::new(),
             iter_index: 0,
             x_offset: (GRID_SIZE / 2),
@@ -633,12 +686,56 @@ impl Data {
     }
     pub fn insert(&mut self, coords: (isize, isize, isize, isize)) {
         let (x_val, y_val, z_val, w_val) = self.check_coords(coords);
-        self.data[w_val][z_val][y_val][x_val] = true;
-        self.altered.push((x_val, y_val, z_val, w_val));
+        if self.data[w_val][z_val][y_val][x_val] == 0 {
+            self.altered.push((x_val, y_val, z_val, w_val));
+        }
+        self.data[w_val][z_val][y_val][x_val] = IS_ACTUAL_OFFSET;
     }
-    fn contains(&mut self, coords: (isize, isize, isize, isize)) -> bool {
+    fn is_set(&mut self, coords: (isize, isize, isize, isize)) -> bool {
+        let (x_val, y_val, z_val, w_val) = self.check_coords(coords);
+        self.data[w_val][z_val][y_val][x_val] > IS_ACTUAL_OFFSET
+    }
+    fn increment(&mut self, coords: (isize, isize, isize, isize)) {
+        let (x_val, y_val, z_val, w_val) = self.check_coords(coords);
+        if self.data[w_val][z_val][y_val][x_val] == 0 {
+            self.altered.push((x_val, y_val, z_val, w_val));
+        }
+        self.data[w_val][z_val][y_val][x_val] += 1;
+    }
+    fn get(&mut self, coords: (isize, isize, isize, isize)) -> u8 {
         let (x_val, y_val, z_val, w_val) = self.check_coords(coords);
         self.data[w_val][z_val][y_val][x_val]
+    }
+    fn get_unchecked(&self, coords: (usize, usize, usize, usize)) -> u8 {
+        self.data[coords.3][coords.2][coords.1][coords.0]
+    }
+    fn convert_raw_to_actual(
+        &self,
+        coords: (usize, usize, usize, usize),
+    ) -> (isize, isize, isize, isize) {
+        (
+            (coords.0 as isize) - (self.x_offset as isize),
+            (coords.1 as isize) - (self.y_offset as isize),
+            (coords.2 as isize) - (self.z_offset as isize),
+            (coords.3 as isize) - (self.w_offset as isize),
+        )
+    }
+    fn convert_actual_to_raw(
+        &self,
+        coords: (isize, isize, isize, isize),
+    ) -> (usize, usize, usize, usize) {
+        (
+            ((coords.0 as isize) + (self.x_offset as isize)) as usize,
+            ((coords.1 as isize) + (self.y_offset as isize)) as usize,
+            ((coords.2 as isize) + (self.z_offset as isize)) as usize,
+            ((coords.3 as isize) + (self.w_offset as isize)) as usize,
+        )
+    }
+    fn get_biggest_size(&self) -> usize {
+        *[self.x_max, self.y_max, self.z_max, self.w_max]
+            .iter()
+            .max()
+            .unwrap()
     }
 }
 impl Iterator for Data {
