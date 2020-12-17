@@ -15,9 +15,13 @@ pub fn run() {
     let time = start.elapsed().as_millis();
     println!("Hash: {}, Time: {}", res, time);
     let start = Instant::now();
-    let res = part_2_bt(&data);
-    let time = start.elapsed().as_millis();
-    println!("BT: {}, Time: {}", res, time);
+    for x in 0..10 {
+        part_2_custom(&data);
+    }
+    // Pre simplify: 63ms
+    let res = part_2_custom(&data);
+    let time = start.elapsed().as_millis() / 11;
+    println!("Simepl: {}, Time: {}", res, time);
 }
 
 fn part_1(data: &[String]) -> usize {
@@ -74,7 +78,7 @@ fn part_2(data: &[String]) -> usize {
                 if check_cube_4dim(*n, &cubes) {
                     new_cubes.insert(*n);
                 }
-                visited.insert(*n);
+                //visited.insert(*n);
             }
             if check_cube_4dim(*test_cube, &cubes) {
                 new_cubes.insert(*test_cube);
@@ -85,37 +89,44 @@ fn part_2(data: &[String]) -> usize {
     }
     cubes.len()
 }
-fn part_2_bt(data: &[String]) -> usize {
+
+fn part_2_custom(data: &[String]) -> usize {
     // Build initial state
-    let mut cubes: BTreeSet<(isize, isize, isize, isize)> = BTreeSet::new();
+    let mut fast_lookup = Data::new();
+    let mut cubes = Vec::new();
     for (y, line) in data.iter().enumerate() {
         for (x, letter) in line.chars().enumerate() {
             if letter.eq(&'#') {
-                cubes.insert((x as isize, y as isize, 0, 0));
+                fast_lookup.insert((x as isize, y as isize, 0, 0));
+                cubes.push((x as isize, y as isize, 0 as isize, 0 as isize));
             }
         }
     }
     for pass in 0..6 {
-        let mut visited: BTreeSet<(isize, isize, isize, isize)> = BTreeSet::new();
-        let mut new_cubes = BTreeSet::new();
-        for test_cube in cubes.iter() {
-            let mut neighbours = get_neighbours_4dim(*test_cube);
-            neighbours.retain(|x| !visited.contains(x));
-            neighbours.retain(|x| !cubes.contains(x));
+        let mut visited = Data::new();
+        let mut new_cubes = Vec::new();
+        let mut new_lookup = Data::new();
+        for test_cube in cubes {
+            let mut neighbours = get_neighbours_4dim(test_cube);
+            neighbours.retain(|x| !visited.contains(*x));
+            neighbours.retain(|x| !fast_lookup.contains(*x));
             for n in &neighbours {
-                if check_cube_4dim_bt(*n, &cubes) {
-                    new_cubes.insert(*n);
+                if check_cube_4dim_data(*n, &mut fast_lookup) {
+                    new_cubes.push(*n);
+                    new_lookup.insert(*n);
                 }
                 visited.insert(*n);
             }
-            if check_cube_4dim_bt(*test_cube, &cubes) {
-                new_cubes.insert(*test_cube);
+            if check_cube_4dim_data(test_cube, &mut fast_lookup) {
+                new_cubes.push(test_cube);
+                new_lookup.insert(test_cube);
             }
-            visited.insert(*test_cube);
+            visited.insert(test_cube);
         }
+        fast_lookup = new_lookup;
         cubes = new_cubes;
     }
-    cubes.len()
+    fast_lookup.len()
 }
 
 fn check_cube_3dim(
@@ -137,6 +148,7 @@ fn check_cube_4dim(
     cubes: &HashSet<(isize, isize, isize, isize)>,
 ) -> bool {
     let neighbour_count = count_neighbours_4dim(test_cube, &cubes);
+    // TODO Can optimise this
     if cubes.contains(&test_cube) {
         if neighbour_count == 2 || neighbour_count == 3 {
             return true;
@@ -146,12 +158,9 @@ fn check_cube_4dim(
     }
     false
 }
-fn check_cube_4dim_bt(
-    test_cube: (isize, isize, isize, isize),
-    cubes: &BTreeSet<(isize, isize, isize, isize)>,
-) -> bool {
-    let neighbour_count = count_neighbours_4dim_bt(test_cube, &cubes);
-    if cubes.contains(&test_cube) {
+fn check_cube_4dim_data(test_cube: (isize, isize, isize, isize), cubes: &mut Data) -> bool {
+    let neighbour_count = count_neighbours_4dim_data(test_cube, cubes);
+    if cubes.contains(test_cube) {
         if neighbour_count == 2 || neighbour_count == 3 {
             return true;
         }
@@ -207,10 +216,7 @@ fn count_neighbours_4dim(
     }
     count
 }
-fn count_neighbours_4dim_bt(
-    coords: (isize, isize, isize, isize),
-    cubes: &BTreeSet<(isize, isize, isize, isize)>,
-) -> usize {
+fn count_neighbours_4dim_data(coords: (isize, isize, isize, isize), cubes: &mut Data) -> usize {
     let mut count = 0;
     for x in &[-1, 0, 1] {
         for y in &[-1, 0, 1] {
@@ -219,10 +225,7 @@ fn count_neighbours_4dim_bt(
                     if *x == 0 && *y == 0 && *z == 0 && *w == 0 {
                         continue;
                     }
-                    if cubes
-                        .get(&(coords.0 + x, coords.1 + y, coords.2 + z, coords.3 + w))
-                        .is_some()
-                    {
+                    if cubes.contains((coords.0 + x, coords.1 + y, coords.2 + z, coords.3 + w)) {
                         count += 1;
                     }
                 }
@@ -247,6 +250,24 @@ fn get_neighbours_3dim(coords: (isize, isize, isize)) -> Vec<(isize, isize, isiz
     neighbours
 }
 fn get_neighbours_4dim(coords: (isize, isize, isize, isize)) -> Vec<(isize, isize, isize, isize)> {
+    let mut neighbours = Vec::new();
+    for x in &[-1, 0, 1] {
+        for y in &[-1, 0, 1] {
+            for z in &[-1, 0, 1] {
+                for w in &[-1, 0, 1] {
+                    if *x == 0 && *y == 0 && *z == 0 && *w == 0 {
+                        continue;
+                    }
+                    neighbours.push((x + coords.0, y + coords.1, z + coords.2, w + coords.3))
+                }
+            }
+        }
+    }
+    neighbours
+}
+fn get_neighbours_4dim_data(
+    coords: (isize, isize, isize, isize),
+) -> Vec<(isize, isize, isize, isize)> {
     let mut neighbours = Vec::new();
     for x in &[-1, 0, 1] {
         for y in &[-1, 0, 1] {
@@ -502,6 +523,138 @@ fn display_cube_state_3dim(cubes: &HashSet<(isize, isize, isize)>) {
                 out.push(*x);
             }
             println!("{}", out);
+        }
+    }
+}
+
+const GRID_SIZE: usize = 25;
+struct Data {
+    data: [[[[bool; GRID_SIZE]; GRID_SIZE]; GRID_SIZE]; GRID_SIZE],
+    altered: Vec<(usize, usize, usize, usize)>,
+    iter_index: usize,
+    x_offset: usize,
+    y_offset: usize,
+    z_offset: usize,
+    w_offset: usize,
+    x_max: usize,
+    y_max: usize,
+    z_max: usize,
+    w_max: usize,
+}
+impl Data {
+    fn new() -> Data {
+        Data {
+            data: [[[[false; GRID_SIZE]; GRID_SIZE]; GRID_SIZE]; GRID_SIZE],
+            altered: Vec::new(),
+            iter_index: 0,
+            x_offset: (GRID_SIZE / 2),
+            y_offset: (GRID_SIZE / 2),
+            z_offset: (GRID_SIZE / 2),
+            w_offset: (GRID_SIZE / 2),
+            x_max: 0,
+            y_max: 0,
+            z_max: 0,
+            w_max: 0,
+        }
+    }
+    fn check_coords(
+        &mut self,
+        coords: (isize, isize, isize, isize),
+    ) -> (usize, usize, usize, usize) {
+        if coords.0 + (self.x_offset as isize) < 0 {
+            panic!(
+                "X offset out of bounds: x_offset: {}, coord: {}",
+                self.x_offset, coords.0
+            );
+        }
+        if coords.1 + (self.y_offset as isize) < 0 {
+            panic!(
+                "y offset out of bounds: y_offset: {}, coord: {}",
+                self.y_offset, coords.1
+            );
+        }
+        if coords.2 + (self.z_offset as isize) < 0 {
+            panic!(
+                "z offset out of bounds: z_offset: {}, coord: {}",
+                self.z_offset, coords.2
+            );
+        }
+        if coords.3 + (self.w_offset as isize) < 0 {
+            panic!(
+                "w offset out of bounds: w_offset: {}, coord: {}",
+                self.w_offset, coords.3
+            );
+        }
+        let x_val = (coords.0 + (self.x_offset as isize)) as usize;
+        if x_val > self.x_max {
+            self.x_max = x_val;
+        }
+        if x_val >= GRID_SIZE {
+            panic!(
+                "X coord ({}) is greater than max grid size ({})",
+                x_val, GRID_SIZE
+            )
+        }
+
+        let y_val = (coords.1 + (self.y_offset as isize)) as usize;
+        if y_val > self.y_max {
+            self.y_max = y_val;
+        }
+        if y_val >= GRID_SIZE {
+            panic!(
+                "Y coord ({}) is greater than max grid size ({})",
+                y_val, GRID_SIZE
+            )
+        }
+        let z_val = (coords.2 + (self.z_offset as isize)) as usize;
+        if z_val > self.z_max {
+            self.z_max = z_val;
+        }
+        if z_val >= GRID_SIZE {
+            panic!(
+                "Z coord ({}) is greater than max grid size ({})",
+                z_val, GRID_SIZE
+            )
+        }
+        let w_val = (coords.3 + (self.w_offset as isize)) as usize;
+        if w_val > self.w_max {
+            self.w_max = w_val;
+        }
+        if w_val >= GRID_SIZE {
+            panic!(
+                "W coord ({}) is greater than max grid size ({})",
+                w_val, GRID_SIZE
+            )
+        }
+        (x_val, y_val, z_val, w_val)
+    }
+    fn len(&self) -> usize {
+        self.altered.len()
+    }
+    pub fn insert(&mut self, coords: (isize, isize, isize, isize)) {
+        let (x_val, y_val, z_val, w_val) = self.check_coords(coords);
+        self.data[w_val][z_val][y_val][x_val] = true;
+        self.altered.push((x_val, y_val, z_val, w_val));
+    }
+    fn contains(&mut self, coords: (isize, isize, isize, isize)) -> bool {
+        let (x_val, y_val, z_val, w_val) = self.check_coords(coords);
+        self.data[w_val][z_val][y_val][x_val]
+    }
+}
+impl Iterator for Data {
+    type Item = (isize, isize, isize, isize);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.iter_index += 1;
+        if let Some(val) = self.altered.get(self.iter_index - 1) {
+            Some((
+                (val.0 as isize) - (self.x_offset as isize),
+                (val.1 as isize) - (self.y_offset as isize),
+                (val.2 as isize) - (self.z_offset as isize),
+                (val.3 as isize) - (self.w_offset as isize),
+            ))
+        } else {
+            None
         }
     }
 }
