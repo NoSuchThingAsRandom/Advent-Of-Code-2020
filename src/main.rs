@@ -6,10 +6,10 @@ mod computer;
 mod days;
 mod misc;
 fn main() {
-    //days::day17::run();
-    //println!("{}ms", start.elapsed().as_secs());*/
     let start_time = Instant::now();
-    run_all();
+    days::day18::run();
+    println!("    Time: {}ms", start_time.elapsed().as_secs());
+    //run_all();
     println!("Total Time: {}ms", start_time.elapsed().as_millis());
 }
 fn run_all() {
@@ -96,5 +96,10 @@ fn run_all() {
     println!("\nDay 17:");
     start = Instant::now();
     days::day17::run();
+    println!("    Time: {}ms", start.elapsed().as_millis());
+    
+    println!("\nDay 18:");
+    start = Instant::now();
+    days::day18::run();
     println!("    Time: {}ms", start.elapsed().as_millis());
 }
