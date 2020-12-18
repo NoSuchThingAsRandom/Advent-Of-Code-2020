@@ -6,7 +6,7 @@ pub fn run() {
     let mut data = read_vec_ints(String::from("Inputs/test10a.txt")).unwrap();
     data.sort();
     //data.sort();
-    println!("    Max volt rating: {}", part_1(data.clone()).unwrap());
+    println!("    Max volt rating: {}", part_1(data).unwrap());
     //println!("Iterations: {}", part_2(&data, 0, 1, 22));
     //println!("Iterations: {:?}", find_critical_path(data).unwrap());
     //println!("Possibile: {:?}", part_2c(data).unwrap());

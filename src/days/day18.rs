@@ -1,14 +1,11 @@
+extern crate peg;
 use crate::misc::error::{AoCError, AoCResult};
 use crate::misc::read_vec_string;
 
-const DEBUG: bool = true;
+const DEBUG: bool = false;
 pub fn run() {
-    //let data = read_vec_string(String::from("Inputs/test17.txt")).unwrap();
     let data = read_vec_string(String::from("Inputs/input18.txt")).unwrap();
-    //let data = vec![String::from("1 + 2 * 3 + 4 * 5 + 6")];
-    //let data = vec![String::from("5 + (8 * 3 + 9 + 3 * 4 * 3)")];
-    //let data = vec![String::from("1 + (2 * 3) + (4 * (5 + 6))")];
-    //println!("    Part 1: {}", part_1(&data).unwrap());
+    println!("    Part 1: {}", part_1(&data).unwrap());
     println!("    Part 2: {}", part_2(&data).unwrap());
 }
 
@@ -291,7 +288,7 @@ fn parse_line_part_2(line: String, depth: u8) -> AoCResult<usize> {
         }
 
         if operator.is_empty() {
-            start_index = end_index - 2;
+            start_index = end_index - b.len() - 1;
         } else {
             let op = Operation::new(
                 a.parse().unwrap(),
@@ -336,7 +333,6 @@ fn parse_line_part_2(line: String, depth: u8) -> AoCResult<usize> {
 fn part_2(data: &[String]) -> AoCResult<usize> {
     let mut total = 0;
     for line in data {
-        println!("--------------------------------");
         total += parse_line_part_2(line.to_string(), 0)?;
     }
     Ok(total)
@@ -452,10 +448,8 @@ mod tests {
 
     #[test]
     fn part_2_input() {
-        //15113163730070681598
-        //155364415721449174
         let data = read_vec_string(String::from("Inputs/input18.txt")).unwrap();
         let result = part_2(&data).unwrap();
-        assert_eq!(result, 848);
+        assert_eq!(result, 323802071857594);
     }
 }

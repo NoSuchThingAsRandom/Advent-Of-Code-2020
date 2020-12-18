@@ -7,7 +7,7 @@ pub fn run() {
     let nums = vec![2, 20, 0, 4, 1, 17];
     //let nums = vec![0, 3, 6];
     println!("    Part 1: {}", solver_hashmap(&nums, 2020).unwrap());
-    let start = Instant::now();
+    let _start = Instant::now();
     /*println!("Part 2A: {},", solver_hashmap(&nums, 30000000).unwrap());
     println!("Time: {}ms", start.elapsed().as_millis());
     let start = Instant::now();*/

@@ -5,11 +5,12 @@ use std::time::Instant;
 mod computer;
 mod days;
 mod misc;
+
 fn main() {
     let start_time = Instant::now();
-    days::day18::run();
-    println!("    Time: {}ms", start_time.elapsed().as_secs());
-    //run_all();
+    //days::day18::run();
+    //println!("    Time: {}ms", start_time.elapsed().as_secs());
+    run_all();
     println!("Total Time: {}ms", start_time.elapsed().as_millis());
 }
 fn run_all() {
@@ -97,7 +98,7 @@ fn run_all() {
     start = Instant::now();
     days::day17::run();
     println!("    Time: {}ms", start.elapsed().as_millis());
-    
+
     println!("\nDay 18:");
     start = Instant::now();
     days::day18::run();

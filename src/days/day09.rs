@@ -5,7 +5,7 @@ use std::time::Instant;
 
 pub fn run() {
     let nums = read_vec_ints(String::from("Inputs/input09.txt")).unwrap();
-    let start = Instant::now();
+    let _start = Instant::now();
     println!("    Part 1: {}", part_1(nums.clone(), 25).unwrap());
     println!("    Part 2: {},", part_2(nums, 167829540).unwrap());
     //print!("Time: {},s", start.elapsed().as_millis());
